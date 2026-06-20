@@ -18,8 +18,7 @@
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
-const { createClient } = window.supabase;
-const supabaseClient = createClient(
+const supabaseClient = window.createClient(
   "https://dqwxgienrtgzkyptzonq.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxd3hnaWVucnRnemt5cHR6b25xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NDM5MTEsImV4cCI6MjA5NzUxOTkxMX0.xIiCYjwAdd_AxEpcYI0AA7ay2dHAcmPyirjDaIUPjOo"
 );
@@ -35,10 +34,20 @@ async function addPost() {
 
 // 加载文章
 async function loadPosts() {
-  const { data } = await supabaseClient.from('posts').select('*').order('id', { ascending: false });
+  const { data, error } = await supabaseClient.from('posts').select('*').order('id', { ascending: false });
 
   const list = document.getElementById('list');
   list.innerHTML = '';
+
+  if (error) {
+    list.innerHTML = `<p style="color:red;">加载失败: ${error.message}</p>`;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    list.innerHTML = '<p>暂无文章</p>';
+    return;
+  }
 
   data.forEach(post => {
     list.innerHTML += `<h3>${post.title}</h3><p>${post.content}</p><hr>`;
