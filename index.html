@@ -18,7 +18,8 @@
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
-const supabase = supabase.createClient(
+const { createClient } = window.supabase;
+const supabaseClient = createClient(
   "https://dqwxgienrtgzkyptzonq.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxd3hnaWVucnRnemt5cHR6b25xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NDM5MTEsImV4cCI6MjA5NzUxOTkxMX0.xIiCYjwAdd_AxEpcYI0AA7ay2dHAcmPyirjDaIUPjOo"
 );
@@ -28,13 +29,13 @@ async function addPost() {
   const title = document.getElementById('title').value;
   const content = document.getElementById('content').value;
 
-  await supabase.from('posts').insert([{ title, content }]);
+  await supabaseClient.from('posts').insert([{ title, content }]);
   loadPosts();
 }
 
 // 加载文章
 async function loadPosts() {
-  const { data } = await supabase.from('posts').select('*').order('id', { ascending: false });
+  const { data } = await supabaseClient.from('posts').select('*').order('id', { ascending: false });
 
   const list = document.getElementById('list');
   list.innerHTML = '';
