@@ -6,19 +6,20 @@
 </head>
 <body>
 
-<h1>我的博客</h1>
+<h1>我的博客 🚀</h1>
 
-<input id="title" placeholder="标题"><br>
-<textarea id="content" placeholder="内容"></textarea><br>
+<input id="title" placeholder="标题"><br><br>
+<textarea id="content" placeholder="内容"></textarea><br><br>
 <button onclick="addPost()">发布</button>
 
 <hr>
 
 <div id="list"></div>
 
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
 <script>
-const supabaseClient = window.createClient(
+const supabase = supabase.createClient(
   "https://dqwxgienrtgzkyptzonq.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxd3hnaWVucnRnemt5cHR6b25xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NDM5MTEsImV4cCI6MjA5NzUxOTkxMX0.xIiCYjwAdd_AxEpcYI0AA7ay2dHAcmPyirjDaIUPjOo"
 );
@@ -28,29 +29,29 @@ async function addPost() {
   const title = document.getElementById('title').value;
   const content = document.getElementById('content').value;
 
-  await supabaseClient.from('posts').insert([{ title, content }]);
+  await supabase.from('posts').insert([
+    { title, content }
+  ]);
+
   loadPosts();
 }
 
 // 加载文章
 async function loadPosts() {
-  const { data, error } = await supabaseClient.from('posts').select('*').order('id', { ascending: false });
+  const { data } = await supabase
+    .from('posts')
+    .select('*')
+    .order('id', { ascending: false });
 
   const list = document.getElementById('list');
   list.innerHTML = '';
 
-  if (error) {
-    list.innerHTML = `<p style="color:red;">加载失败: ${error.message}</p>`;
-    return;
-  }
-
-  if (!data || data.length === 0) {
-    list.innerHTML = '<p>暂无文章</p>';
-    return;
-  }
-
   data.forEach(post => {
-    list.innerHTML += `<h3>${post.title}</h3><p>${post.content}</p><hr>`;
+    list.innerHTML += `
+      <h3>${post.title}</h3>
+      <p>${post.content}</p>
+      <hr>
+    `;
   });
 }
 
